@@ -89,6 +89,6 @@ We can conclusively assert that cars with lower fuel consumption are environment
 ## 6. Recommendations.
 To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
 
-The results obtained through the executed code can be found in the project folder associated with the mentioned programming language.
+The code and findings can be found in the project folder associated with the mentioned programming language.
 
 For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

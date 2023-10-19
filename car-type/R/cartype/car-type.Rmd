@@ -1,0 +1,574 @@
+------------------------------------------------------------------------
+
+---
+title: "Car Types"
+author: "Erick Borda"
+date: "2023-10-10"
+output: pdf_document
+---
+
+# CarType Dataset Analysis Project
+
+The goal of this analysis is to use statistical techniques on the "CarType" dataset to gain new insights and data understanding. The "CarType" dataset will be analyze with **#R**. Addressing specific business inquiries: identifying the most fuel-efficient car type and determining the most environmentally friendly car. Elaboration on particular tasks is outlined below, encompassing a concise project overview, the identified problem, the approach taken, and the major discoveries
+
+## 1. Identified Problem
+
+The primary problem is to identify the car type that offers the highest fuel efficiency and to determine the most environmentally friendly car based on the given dataset. This involves analyzing relevant features and variables that influence fuel efficiency and environmental impact.
+
+## 2. Research Question
+
+On this project the focus will be on:
+
+-   Fuel Economy (FE).
+
+-   CO2 Emission.
+
+### 2.1. What type of car provides the most fuel economy?
+
+Based on the question the Null Hypothesis is:
+
+**H0:** There is no difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.
+
+**H1:** There is difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.
+
+### 2.2. What type of car provides the most fuel economy?
+
+Based on the question the Null Hypothesis is:
+
+**H0:** There is no difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
+
+**H1:** There is difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
+
+## 3. Data Cleaning.
+
+To perform the cleaning step is necessary to use the right library:
+
+```{r warning=FALSE}
+
+  install.packages("readxl")
+  library(readxl)
+
+```
+
+**Loading Excel files**, First step is setting the path:
+
+```{r }
+cartype <- read_excel("E:/Proyectos/R projects/data-projects/car-type/cartype.xls")
+View(cartype)
+```
+
+### 3.1. Missing data
+
+```{r}
+# Check for missing data
+missing_values <- is.na(cartype)
+
+# Summarize missing values by column
+View(summary(missing_values))
+```
+
+### 3.2. Duplicate data.
+
+**Identified the duplicated data**, by using the following code:
+
+```{r}
+# Check for duplicate data
+duplicates <- duplicated(cartype)
+# Summarize duplicate data
+print(sum(duplicates))
+```
+
+**Remove duplicate data**, executing the following code:
+
+```{r}
+# Remove duplicate rows using duplicated()
+df_no_duplicates <- cartype[!duplicated(cartype), ]
+
+```
+
+## 4. Data Exploration.
+
+To perform this important part is Need it load the follow library:
+
+```{r warning=FALSE}
+install.packages("psych")
+library(psych)
+
+```
+
+### 4.1. Exploration for Numerical Data.
+
+Descriptive statistics of all numeric data-fields:
+
+```{r}
+summary(df_no_duplicates)
+```
+
+### 4.2. Categorical Data.
+
+Descriptive statistics of all categorical data-fields:
+
+```{r message=FALSE, warning=FALSE}
+# Install plot
+install.packages("ggplot2")
+library(ggplot2)
+
+```
+
+A method that get descriptive statistcs for categorical data with a bar graph is show below:
+
+```{r}
+calculate_categorical_stats <- function(data, col) {
+  if (!is.data.frame(data)) {
+    stop("Input 'data' must be a data frame.")
+  }
+
+  if (!is.vector(col)) {
+    stop("Input 'col' must be a vector representing a column.")
+  }
+
+  stats <- NULL
+  ggplot_obj <- NULL
+
+  if (is.factor(col) || is.character(col)) {
+    unique_values <- table(col)
+    percentage_distribution <- prop.table(unique_values) * 100
+    stats <- data.frame(
+      Value = as.character(names(unique_values)),
+      Frequency = as.numeric(unique_values),
+      Percentage = as.numeric(percentage_distribution)
+    )
+
+    # Create a ggplot object for bar plot
+    ggplot_obj <- ggplot(stats, aes(x = Value, y = Frequency)) +
+      geom_bar(stat = "identity") +
+      labs(
+        title = "Frequency of the column",
+        x = "Value",
+        y = "Frequency"
+      )
+  } else if (is.numeric(col)) {
+    unique_values <- table(col)
+    if (length(unique_values) <= 10) {
+      percentage_distribution <- prop.table(unique_values) * 100
+      stats <- data.frame(
+        Value = as.numeric(names(unique_values)),
+        Frequency = as.numeric(unique_values),
+        Percentage = as.numeric(percentage_distribution)
+      )
+
+      ggplot_obj <- ggplot(stats, aes(x = Value, y = Frequency)) +
+      geom_bar(stat = "identity") +
+      labs(
+        title = "Frequency of the column",
+        x = "Value",
+        y = "Frequency"
+      ) 
+    }
+  } else {
+    stop("Column type not supported.")
+  }
+
+  result <- list(stats = stats, ggplot = ggplot_obj)
+  return(result)
+}
+```
+
+#### 4.2.1. Number of Cylinders
+
+```{r}
+
+calculate_categorical_stats(df_no_duplicates, df_no_duplicates$`# Cylinders`)
+
+```
+
+#### 4.2.2. Engine Displacement
+
+```{r}
+
+calculate_categorical_stats(df_no_duplicates, df_no_duplicates$`Engine Displacement`)
+
+```
+
+#### 4.2.3. Division
+
+```{r}
+
+calculate_categorical_stats(df_no_duplicates, df_no_duplicates$Division)
+
+```
+
+### 4.3. Outliers.
+
+Only the datafields related to Fuel economy and CO2 will be evaluated due to the research question
+
+#### 4.3.1. Fuel Economy.
+
+```{r}
+outliers <-boxplot(df_no_duplicates$`City FE`, data = df_no_duplicates,xlab="City FE")$out
+print("-> City FE")
+print(outliers)
+outliers <-boxplot(df_no_duplicates$`Highway FE`, data = df_no_duplicates,xlab="Highway FE")$out
+print("-> Highway FE")
+print(outliers)
+outliers <-boxplot(df_no_duplicates$`Combined FE`, data = df_no_duplicates,xlab="Combined FE")$out
+print("-> Combined FE")
+print(outliers)
+```
+
+#### 4.3.2. Combined CO2.
+
+```{r}
+outliers <-boxplot(df_no_duplicates$`City CO2`, data = df_no_duplicates,xlab="City CO2")$out
+print("-> City CO2")
+print(outliers)
+outliers <-boxplot(df_no_duplicates$`Highway CO2`, data = df_no_duplicates,xlab="Highway CO2")$out
+print("-> Highway CO2")
+print(outliers)
+outliers <-boxplot(df_no_duplicates$`Combined CO2`, data = df_no_duplicates,xlab="Combined CO2")$out
+print("-> Combined CO2")
+print(outliers)
+```
+
+The decision to retain the outliers discovered in the dataset, is because these values may yield valuable insights into our analysis of car types. To gain a more comprehensive understanding of the dataset, it is essential to conduct both normal distribution to take further decisions.
+
+### 4.4. Normal Distribution
+
+```{r}
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("magrittr") # package installations are only needed the first time you use it
+install.packages("dplyr")    # alternative installation of the %>%
+library(magrittr) # needs to be run every time you start R and want to use %>%
+library(dplyr)    # alternatively, this also loads %>%
+install.packages("pheatmap")
+library(pheatmap)
+```
+
+**Analysis for Fuel Economy:**
+
+*City FE*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`City FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "City FE", ylab = "Frequency", col = "blue", border = "black")
+
+# Create a QQ plot
+qqnorm(df_no_duplicates$`City FE`)
+qqline(df_no_duplicates$`City FE`)
+
+```
+
+*Highway FE*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`Highway FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "Highway FE", ylab = "Frequency", col = "blue", border = "black")
+
+# Create a QQ plot
+qqnorm(df_no_duplicates$`Highway FE`)
+qqline(df_no_duplicates$`Highway FE`)
+
+```
+
+*Combined FE*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`Combined FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "Combined FE", ylab = "Frequency", col = "blue", border = "black")
+
+# Create a QQ plot
+qqnorm(df_no_duplicates$`Combined FE`)
+qqline(df_no_duplicates$`Combined FE`)
+
+```
+
+**Analysis for CO2:**
+
+*City CO2*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`City CO2`, breaks = 30, plot = FALSE)       # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "City CO2", ylab = "Frequency", col = "blue", border = "black")
+
+# Create a QQ plot
+qqnorm(df_no_duplicates$`City FE`)
+qqline(df_no_duplicates$`City FE`)
+
+```
+
+*Highway CO2*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`Highway CO2`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "Highway CO2", ylab = "Frequency", col = "blue", border = "black")
+# Create a QQ plot
+qqnorm(df_no_duplicates$`Highway FE`)
+qqline(df_no_duplicates$`Highway FE`)
+```
+
+*Combined CO2*
+
+```{r}
+
+# Create the histogram
+hist_data <- hist(df_no_duplicates$`Combined CO2`, breaks = 30, plot = FALSE)  # adjust breaks as needed
+
+# Plot the histogram
+plot(hist_data, main = "Histogram of Sample Data",
+     xlab = "Combined CO2", ylab = "Frequency", col = "blue", border = "black")
+# Create a QQ plot
+qqnorm(df_no_duplicates$`Combined FE`)
+qqline(df_no_duplicates$`Combined FE`)
+```
+
+The plots have validated that the data does not adhere to a normal distribution, enabling us to determine which statistical tests are more suitable for our subsequent analyses.
+
+### 4.5. Feature Selection.
+
+Feature selection is a crucial step in data analysis, especially when dealing with similar data fields or variables that may have strong correlations. Its purpose is to identify and choose the most relevant and informative variables while discarding redundant or less important ones by using a correlation analysis.
+
+**Correlation Analysis.** Due to the data is not normal distributed **Nonparametric test** should be perform
+
+**Fuel Economy**
+
+```{r}
+
+data <- data.frame(
+  CityFE = df_no_duplicates$`City FE`,
+  HighwayFE = df_no_duplicates$`Highway FE`,
+  CombinedFE = df_no_duplicates$`Combined FE`
+)
+
+# Calculate Spearman correlation matrix
+correlation_matrix <- cor(data, method = "spearman")
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+# Create a heatmap
+pheatmap(correlation_matrix, 
+         color = colorRampPalette(c("blue", "white", "red"))(100), 
+         scale = "none")
+```
+
+**CO2**
+
+```{r}
+
+data <- data.frame(
+  CityCO2 = df_no_duplicates$`City CO2`,
+  HighwayCO2 = df_no_duplicates$`Highway CO2`,
+  CombinedCO2 = df_no_duplicates$`Combined CO2`
+)
+
+# Calculate Spearman correlation matrix
+correlation_matrix <- cor(data, method = "spearman")
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+# Create a heatmap
+pheatmap(correlation_matrix, 
+         color = colorRampPalette(c("blue", "white", "red"))(100), 
+         scale = "none")
+```
+
+As evident from the preceding images, the Spearman correlation test was selected. Spearman Rank Correlation (Spearman's rho) is a statistical method suitable for assessing relationships in non-normally distributed, non-linear, and ordinal data by capturing monotonic associations through the use of ranked data.
+
+Given the significant correlations between City and Highway with the Combined metrics for Fuel Economy and CO2 emissions, the analysis will predominantly leverage the **Combined data** to address the research questions, enhancing the efficiency of the analysis.
+
+### 4.6. Correlations: Insights & Implications.
+
+**Fuel Economy**
+
+```{r}
+
+# Convert categorical to ranks
+ranks_cy <- rank(df_no_duplicates$`# Cylinders`)
+ranks_ed <- rank(df_no_duplicates$`Engine Displacement`)
+ranks_di <- rank(df_no_duplicates$Division)
+
+data <- data.frame(
+  CombinedFE = df_no_duplicates$`Combined FE`,
+  Cylinders = ranks_cy,
+  EgineDisplacement = ranks_ed,
+  Division = ranks_di
+)
+
+# Calculate Spearman correlation matrix
+correlation_matrix <- cor(data, method = "spearman")
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+# Create a heatmap
+pheatmap(correlation_matrix, 
+         color = colorRampPalette(c("blue", "white", "red"))(100), 
+         scale = "none")
+
+
+```
+
+**CO2 Emission**
+
+```{r}
+
+# Convert categorical to ranks
+ranks_cy <- rank(df_no_duplicates$`# Cylinders`)
+ranks_ed <- rank(df_no_duplicates$`Engine Displacement`)
+ranks_di <- rank(df_no_duplicates$Division)
+
+data <- data.frame(
+  CombinedCO2 = df_no_duplicates$`Combined CO2`,
+  Cylinders = ranks_cy,
+  EgineDisplacement = ranks_ed,
+  Division = ranks_di
+)
+
+# Calculate Spearman correlation matrix
+correlation_matrix <- cor(data, method = "spearman")
+
+# Print the correlation matrix
+print(correlation_matrix)
+
+# Create a heatmap
+pheatmap(correlation_matrix, 
+         color = colorRampPalette(c("blue", "white", "red"))(100), 
+         scale = "none")
+
+
+```
+
+The results presented above indicate that there is a statistically significant correlation (p\<0.01) between the two Combined variables and the three independent variables (Number of Cylinders, Engine Displacement , Division). To further explain this relationship:
+
+-   There is a strong negative correlation between Combined Fuel Economy (FE) and Engine Displacement, Number of Cylinders.
+
+-   A weak negative correlation exists between Combined Fuel Economy and Division.
+
+-   There is a strong positive correlation between Combined CO2 and Number of Cylinders, and Engine Displacement.
+
+-   A weak positive correlation is observed between Combined Fuel Economy and Number of Gears.
+
+```{r}
+outliers <-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City FE")$out
+print(outliers)
+
+```
+
+\*\* \# Cylinders\*\*
+
+```{r}
+outliers <-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City FE")$out
+print(outliers)
+
+```
+
+\*\* \# Gears\*\*
+
+```{r}
+boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Gears`, data = df_no_duplicates,xlab="# Gears", ylab="City FE")$out
+
+```
+
+\*\* \# Engine Displacement\*\*
+
+```{r}
+boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="City FE")$out
+```
+
+### 4.7. Visual Insights into Fuel Economy and CO2.
+
+#### 4.7.1. Fuel Economy.
+
+**Number of Cylinders**
+
+```{r}
+boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="Combined FE")
+```
+
+**Engine Displacement**
+
+```{r}
+boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="Combined FE")
+```
+
+**Division**
+
+```{r}
+boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="Combined FE")
+```
+
+#### 4.7.2. CO2 Emission.
+
+**Number of Cylinders**
+
+```{r}
+boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="Combined CO2")
+```
+
+**Engine Displacement**
+
+```{r}
+boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="Combined CO2")
+```
+
+**Division**
+
+```{r}
+boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="Combined CO2")
+```
+
+## 5. Validating Hypotheses and Addressing Research Questions.
+
+| Fuel Economy                                                                                                               | CO2 Emission                                                                                                                       | Results      |
+|---------------------------|---------------------------|------------------|
+| **H0:** There is no difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
+| **H1:** There is difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
+
+From the above conclusion, we can say there is a relation between Fuel Economy and CO2 emissions, gathering all the information is possible to answer the research questions formulated in the context.
+
+-   What type of car provides the most fuel economy?
+
+-   What type of car is environmentally friendly?
+
+The type of car that provides the most FE and lowest CO2 emission can be defined with the following characteristics:
+
+-   Reducing the number of cylinders tents to decreased fuel consumption.
+
+-   Smaller engines typically have lower fuel consumption.
+
+-   Ford Cars are well know to build cars for the average men.
+
+We can conclusively assert that cars with lower fuel consumption are environmentally friendly
+
+## 6. Recommendations.
+To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
+
+
+For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

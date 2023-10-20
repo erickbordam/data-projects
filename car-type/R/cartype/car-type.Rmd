@@ -216,7 +216,7 @@ print("-> Combined FE")
 print(outliers)
 ```
 
-#### 4.3.2. Combined CO2.
+#### 4.3.2. CO2 Emission.
 
 ```{r}
 outliers <-boxplot(df_no_duplicates$`City CO2`, data = df_no_duplicates,xlab="City CO2")$out
@@ -475,33 +475,6 @@ The results presented above indicate that there is a statistically significant c
 
 -   A weak positive correlation is observed between Combined Fuel Economy and Number of Gears.
 
-```{r}
-outliers <-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City FE")$out
-print(outliers)
-
-```
-
-\*\* \# Cylinders\*\*
-
-```{r}
-outliers <-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City FE")$out
-print(outliers)
-
-```
-
-\*\* \# Gears\*\*
-
-```{r}
-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Gears`, data = df_no_duplicates,xlab="# Gears", ylab="City FE")$out
-
-```
-
-\*\* \# Engine Displacement\*\*
-
-```{r}
-boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="City FE")$out
-```
-
 ### 4.7. Visual Insights into Fuel Economy and CO2.
 
 #### 4.7.1. Fuel Economy.
@@ -546,8 +519,42 @@ boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$Division, data = df_n
 
 ## 5. Validating Hypotheses and Addressing Research Questions.
 
+To accept or reject the null Hypotesis stated on [2. Research Question], we need to use Kruskal-Wallis test, knowing that the does not follow normal distribution, to do that we need execute the following code:
+
+```{r}
+# Perform Kruskal-Wallis test
+krustal_data <- data.frame(
+  CombinedFE = df_no_duplicates$`Combined FE`,
+  CombinedCO2 = df_no_duplicates$`Combined CO2`,
+  Cylinders = df_no_duplicates$`# Cylinders`,
+  EngineDisplacement = df_no_duplicates$`Engine Displacement`,
+  Division = df_no_duplicates$Division
+)
+
+# Initialize a list to store the results
+kruskal_results <- list()
+
+# Loop through combinations of numeric and categorical variables
+for (numeric_var in c("CombinedFE", "CombinedCO2")) {
+  for (category_var in c("Cylinders", "EngineDisplacement", "Division")) {
+    formula <- paste(numeric_var, "~", category_var)
+    result <- kruskal.test(as.formula(formula), data = krustal_data)
+    
+    # Store the results in the list
+    result_name <- paste(numeric_var, "vs", category_var)
+    kruskal_results[[result_name]] <- result
+  }
+}
+
+# View the results
+print(kruskal_results)
+
+```
+
+The result is p-values less than 2.2e-16 is a very strong indication that there is a significant effect or difference in your data, and you can confidently reject the null hypothesis in favor of the alternative hypothesis.
+
 | Fuel Economy                                                                                                               | CO2 Emission                                                                                                                       | Results      |
-|---------------------------|---------------------------|------------------|
+|----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | **H0:** There is no difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
 | **H1:** There is difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
 
@@ -568,7 +575,7 @@ The type of car that provides the most FE and lowest CO2 emission can be defined
 We can conclusively assert that cars with lower fuel consumption are environmentally friendly
 
 ## 6. Recommendations.
-To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
 
+To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
 
 For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

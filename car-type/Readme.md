@@ -78,11 +78,11 @@ From the above conclusion, we can say there is a relation between Fuel Economy a
 
 The type of car that provides the most FE and lowest CO2 emission can be defined with the following characteristics:
 
--   Reducing the number of cylinders tents to decreased fuel consumption.
+-   Cylinders: Reducing the number of cylinders tents to decreased fuel consumption.
 
--   Smaller engines typically have lower fuel consumption.
+-   Engine displacement: Smaller engines typically have lower fuel consumption.
 
--   Ford Cars are well know to build cars for the average men.
+-   Division: Ford Cars are well know to build cars for the average men.
 
 We can conclusively assert that cars with lower fuel consumption are environmentally friendly
 

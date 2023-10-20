@@ -8,9 +8,7 @@ This repository contains various data science projects I have worked on. Each pr
 
 **Description:** The goal of this Project is to utilize diverse statistical techniques on the "CarType" dataset to gain new insights and data understanding. Your task is to analyze the "CarType" dataset using statistical software using R, and Google Colab. Business inquiries: identifying the most fuel-efficient car type and determining the most environmentally friendly car. Elaboration on particular tasks is outlined below, encompassing a concise project overview, the identified problem, the approach taken, and the major discoveries.
 
-**GitHub Repository:** [Project Repository](link_to_repository)
-
-**Blog Post/Documentation:** [Project Blog Post/Documentation](link_to_blogpost_or_documentation)
+**GitHub Repository:** ([link_to_repository](https://github.com/erickbordam/data-projects/tree/main/car-type))
 
 ---
 

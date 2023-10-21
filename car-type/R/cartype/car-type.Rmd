@@ -157,22 +157,21 @@ calculate_categorical_stats <- function(data, col) {
       )
   } else if (is.numeric(col)) {
     unique_values <- table(col)
-    if (length(unique_values) <= 10) {
-      percentage_distribution <- prop.table(unique_values) * 100
-      stats <- data.frame(
-        Value = as.numeric(names(unique_values)),
+    percentage_distribution <- prop.table(unique_values) * 100
+    stats <- data.frame(
+    Value = as.numeric(names(unique_values)),
         Frequency = as.numeric(unique_values),
         Percentage = as.numeric(percentage_distribution)
       )
 
-      ggplot_obj <- ggplot(stats, aes(x = Value, y = Frequency)) +
-      geom_bar(stat = "identity") +
-      labs(
+    gplot_obj <- ggplot(stats, aes(x = Value, y = Frequency)) +
+    geom_bar(stat = "identity") +
+    labs(
         title = "Frequency of the column",
         x = "Value",
         y = "Frequency"
-      ) 
-    }
+    ) 
+    
   } else {
     stop("Column type not supported.")
   }
@@ -277,7 +276,7 @@ qqline(df_no_duplicates$`City FE`)
 
 ```{r}
 # Descriptive assessment
-skewness_value <- e1071 ::skewness(df_no_duplicates$`Highway FE`)
+skewness_value <- e1071 ::skewness(df_no_duplicates$`City FE`)
 
 if (abs(skewness_value) < 0.5) {
   description <- "approximately normally distributed"
@@ -803,7 +802,7 @@ print(kruskal_results)
 The result is p-values less than 2.2e-16 is a very strong indication that there is a significant effect or difference in your data, and you can confidently reject the null hypothesis in favor of the alternative hypothesis.
 
 | Fuel Economy                                                                                                           | CO2 Emission                                                                                                                   | Results      |
-|------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------|
+|---------------------------|---------------------------|------------------|
 | **H0:** There is no difference in City FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
 | **H1:** There is difference in City FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
 

@@ -60,6 +60,8 @@ install.packages("pheatmap")
 ## Install library for data manipulation and transformation 
 install.packages("magrittr")
 install.packages("dplyr")
+# Skewness analysis
+install.packages("e1071")
 
 # Loading libraries into the session
 library(readxl)
@@ -67,7 +69,8 @@ library(ggplot2)
 library(psych)
 library(pheatmap)
 library(magrittr) 
-library(dplyr)    
+library(dplyr)
+library("e1071")
 ```
 
 **Loading Excel files**, First step is setting the path:
@@ -239,109 +242,361 @@ The decision to retain the outliers discovered in the dataset, is because these 
 
 ### 4.4. Normal Distribution
 
+To rigorously assess dataset normality, the following steps are employed:
+
+-   **Data Plots:** Initial visual inspection through data plots, including histograms and Q-Q plots, serves as a preliminary assessment. Departures from a bell-shaped curve or a straight line in Q-Q plots may indicate non-normality.
+
+-   **Skewness Test:** A skewness test quantifies data asymmetry. Positive or negative values indicate skewness. Values close to zero suggest normality.
+
+-   **Shapiro-Wilk Test:** This formal statistical test provides a definitive verdict on normality. A p-value less than the significance level indicates non-normality.
+
+These steps allow a conclusive determination of whether the dataset adheres to a normal distribution or deviates from it.
+
 **Analysis for Fuel Economy:**
 
-*City FE*
+***City FE***
+
+-   **Data Plots.**
 
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`City FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`City FE`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "City FE", ylab = "Frequency", col = "blue", border = "black")
 
 # Create a QQ plot
-qqnorm(df_no_duplicates$`City FE`)
+qqnorm(df_no_duplicates$`City FE`, main = "QQ Plot of City FE")
 qqline(df_no_duplicates$`City FE`)
 
 ```
 
-*Highway FE*
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`Highway FE`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("City FE data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`City FE`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("City FE data is", description, " p-value: ", shapiro_test_result$p.value)
+```
+
+***Highway FE***
+
+-   **Data Plots.**
 
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`Highway FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`Highway FE`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "Highway FE", ylab = "Frequency", col = "blue", border = "black")
 
 # Create a QQ plot
-qqnorm(df_no_duplicates$`Highway FE`)
+qqnorm(df_no_duplicates$`Highway FE`, main = "QQ Plot of Highway FE")
 qqline(df_no_duplicates$`Highway FE`)
 
 ```
 
-*Combined FE*
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`Highway FE`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("Highway FE data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`Highway FE`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("Highway FE data is", description, " p-value: ", shapiro_test_result$p.value)
+```
+
+***Combined FE***
+
+-   **Data Plots.**
 
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`Combined FE`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`Combined FE`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "Combined FE", ylab = "Frequency", col = "blue", border = "black")
 
 # Create a QQ plot
-qqnorm(df_no_duplicates$`Combined FE`)
+qqnorm(df_no_duplicates$`Combined FE`, main = "QQ Plot of Combined FE")
 qqline(df_no_duplicates$`Combined FE`)
 
 ```
 
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`Combined FE`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("Combined FE data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`Combined FE`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("Combined FE data is", description, " p-value: ", shapiro_test_result$p.value)
+```
+
+The results are:
+
+-   City FE, non-normal distributed.
+-   Highway FE, non-normal distributed.
+-   Combined FE, non-normal distributed.
+
 **Analysis for CO2:**
 
-*City CO2*
+***City CO2***
+
+-   **Data Plots.**
 
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`City CO2`, breaks = 30, plot = FALSE)       # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`City CO2`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "City CO2", ylab = "Frequency", col = "blue", border = "black")
 
 # Create a QQ plot
-qqnorm(df_no_duplicates$`City FE`)
-qqline(df_no_duplicates$`City FE`)
+qqnorm(df_no_duplicates$`City CO2`, main = "QQ Plot of City CO2")
+qqline(df_no_duplicates$`City CO2`)
 
 ```
 
-*Highway CO2*
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`City CO2`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("City CO2 data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`City CO2`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("City CO2 data is", description, " value: ", shapiro_test_result$p.value)
+```
+
+***Highway CO2***
+
+-   **Data Plots.**
 
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`Highway CO2`, breaks = 30, plot = FALSE)    # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`Highway CO2`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "Highway CO2", ylab = "Frequency", col = "blue", border = "black")
+
 # Create a QQ plot
-qqnorm(df_no_duplicates$`Highway FE`)
-qqline(df_no_duplicates$`Highway FE`)
+qqnorm(df_no_duplicates$`Highway CO2`, main = "QQ Plot of Highway CO2")
+qqline(df_no_duplicates$`Highway CO2`)
+
+```
+
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`Highway CO2`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("Highway CO2 data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`Highway CO2`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("Highway CO2 data is", description, " value: ", shapiro_test_result$p.value)
 ```
 
 *Combined CO2*
 
+-   **Data Plots.**
+
 ```{r}
 
 # Create the histogram
-hist_data <- hist(df_no_duplicates$`Combined CO2`, breaks = 30, plot = FALSE)  # adjust breaks as needed
+hist_data <- hist(df_no_duplicates$`Combined CO2`, breaks = 30, plot = FALSE)    
 
 # Plot the histogram
 plot(hist_data, main = "Histogram of Sample Data",
      xlab = "Combined CO2", ylab = "Frequency", col = "blue", border = "black")
+
 # Create a QQ plot
-qqnorm(df_no_duplicates$`Combined FE`)
-qqline(df_no_duplicates$`Combined FE`)
+qqnorm(df_no_duplicates$`Combined CO2`, main = "QQ Plot of Combined CO2")
+qqline(df_no_duplicates$`Combined CO2`)
+
 ```
 
-The plots have validated that the data does not adhere to a normal distribution, enabling us to determine which statistical tests are more suitable for our subsequent analyses.
+-   **Skewness Test.**
+
+```{r}
+# Descriptive assessment
+skewness_value <- e1071 ::skewness(df_no_duplicates$`Combined CO2`)
+
+if (abs(skewness_value) < 0.5) {
+  description <- "approximately normally distributed"
+} else if (skewness_value < -0.5) {
+  description <- "left-skewed"
+} else if (skewness_value > 0.5) {
+  description <- "right-skewed"
+} else {
+  description <- "exhibiting non-normal characteristics"
+}
+
+cat("Combined CO2 data is", description, ", value: ", skewness_value)
+
+```
+
+-   **Shapiro-Wilk Test.**
+
+```{r}
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(df_no_duplicates$`Combined CO2`)
+
+# Descriptive assessment based on the Shapiro-Wilk test result
+if (shapiro_test_result$p.value > 0.05) {
+  description <- "normally distributed"
+} else {
+  description <- "non-normal distributed"
+}
+
+cat("Combined CO2 data is", description, " value: ", shapiro_test_result$p.value)
+```
+
+The results are:
+
+-   City CO2, non-normal distributed.
+-   Highway CO2, non-normal distributed.
+-   Combined CO2, non-normal distributed.
 
 ### 4.5. Feature Selection.
 
@@ -548,7 +803,7 @@ print(kruskal_results)
 The result is p-values less than 2.2e-16 is a very strong indication that there is a significant effect or difference in your data, and you can confidently reject the null hypothesis in favor of the alternative hypothesis.
 
 | Fuel Economy                                                                                                           | CO2 Emission                                                                                                                   | Results      |
-|---------------------------|----------------------------|-----------------|
+|------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------|
 | **H0:** There is no difference in City FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
 | **H1:** There is difference in City FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
 
@@ -571,5 +826,7 @@ We can assert with confidence that vehicles with higher fuel economy are inheren
 ## 6. Recommendations.
 
 To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
+
+The code and results are inside of its folder Language, take a look. Your curiosity is the key to unlocking the wonders of our research!
 
 For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

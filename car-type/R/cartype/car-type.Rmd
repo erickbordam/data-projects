@@ -17,37 +17,57 @@ The primary problem is to identify the car type that offers the highest fuel eff
 
 ## 2. Research Question
 
-On this project the focus will be on:
+In this project, we will have a dual focus:
 
--   Fuel Economy (FE).
+1.  Fuel Economy (FE) - Our research will center on optimizing fuel efficiency in various driving conditions.
 
--   CO2 Emission.
+2.  CO2 Emission - We will examine vehicle emissions, specifically focusing on reducing carbon dioxide (CO2) emissions.
+
+Additionally, we will place a distinct emphasis on the **Urban sector**, delving into the unique challenges and opportunities it presents for both fuel economy and emissions analysis
 
 ### 2.1. What type of car provides the most fuel economy?
 
 Based on the question the Null Hypothesis is:
 
-**H0:** There is no difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.
+**H0:** There is no difference in City FE between vehicles with different Cylinders, Engine Displacement and Division.
 
-**H1:** There is difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.
+**H1:** There is difference in City FE between vehicles with different Cylinders, Engine Displacement and Division.
 
 ### 2.2. What type of car provides the most fuel economy?
 
 Based on the question the Null Hypothesis is:
 
-**H0:** There is no difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
+**H0:** There is no difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
 
-**H1:** There is difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
+**H1:** There is difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.
 
 ## 3. Data Cleaning.
 
-To perform the cleaning step is necessary to use the right library:
+In the initial phase, it is essential to identify all the libraries that will be used in this project.
+
+### 3.1. Importing Libraries.
 
 ```{r warning=FALSE}
 
-  install.packages("readxl")
-  library(readxl)
+# Install Libraries
+## Excel files handling
+install.packages("readxl")
+## Install plot
+install.packages("ggplot2")
+## Install or correlation analysis
+install.packages("psych")
+install.packages("pheatmap")
+## Install library for data manipulation and transformation 
+install.packages("magrittr")
+install.packages("dplyr")
 
+# Loading libraries into the session
+library(readxl)
+library(ggplot2)
+library(psych)
+library(pheatmap)
+library(magrittr) 
+library(dplyr)    
 ```
 
 **Loading Excel files**, First step is setting the path:
@@ -57,7 +77,7 @@ cartype <- read_excel("E:/Proyectos/R projects/data-projects/car-type/cartype.xl
 View(cartype)
 ```
 
-### 3.1. Missing data
+### 3.2. Missing data
 
 ```{r}
 # Check for missing data
@@ -67,7 +87,7 @@ missing_values <- is.na(cartype)
 View(summary(missing_values))
 ```
 
-### 3.2. Duplicate data.
+### 3.3. Duplicate data.
 
 **Identified the duplicated data**, by using the following code:
 
@@ -88,14 +108,6 @@ df_no_duplicates <- cartype[!duplicated(cartype), ]
 
 ## 4. Data Exploration.
 
-To perform this important part is Need it load the follow library:
-
-```{r warning=FALSE}
-install.packages("psych")
-library(psych)
-
-```
-
 ### 4.1. Exploration for Numerical Data.
 
 Descriptive statistics of all numeric data-fields:
@@ -107,13 +119,6 @@ summary(df_no_duplicates)
 ### 4.2. Categorical Data.
 
 Descriptive statistics of all categorical data-fields:
-
-```{r message=FALSE, warning=FALSE}
-# Install plot
-install.packages("ggplot2")
-library(ggplot2)
-
-```
 
 A method that get descriptive statistcs for categorical data with a bar graph is show below:
 
@@ -233,17 +238,6 @@ print(outliers)
 The decision to retain the outliers discovered in the dataset, is because these values may yield valuable insights into our analysis of car types. To gain a more comprehensive understanding of the dataset, it is essential to conduct both normal distribution to take further decisions.
 
 ### 4.4. Normal Distribution
-
-```{r}
-install.packages("ggplot2")
-library(ggplot2)
-install.packages("magrittr") # package installations are only needed the first time you use it
-install.packages("dplyr")    # alternative installation of the %>%
-library(magrittr) # needs to be run every time you start R and want to use %>%
-library(dplyr)    # alternatively, this also loads %>%
-install.packages("pheatmap")
-library(pheatmap)
-```
 
 **Analysis for Fuel Economy:**
 
@@ -401,7 +395,7 @@ pheatmap(correlation_matrix,
 
 As evident from the preceding images, the Spearman correlation test was selected. Spearman Rank Correlation (Spearman's rho) is a statistical method suitable for assessing relationships in non-normally distributed, non-linear, and ordinal data by capturing monotonic associations through the use of ranked data.
 
-Given the significant correlations between City and Highway with the Combined metrics for Fuel Economy and CO2 emissions, the analysis will predominantly leverage the **Combined data** to address the research questions, enhancing the efficiency of the analysis.
+Based on the correlation results, we observe that the relationships between these three datafields are closely aligned. Additionally, considering my specific focus on urban areas, I can confidently select **City FE** as the most pertinent variable for my analysis. This choice is substantiated by the similarity in correlations and aligns with the urban-centric nature of my research.
 
 ### 4.6. Correlations: Insights & Implications.
 
@@ -415,7 +409,7 @@ ranks_ed <- rank(df_no_duplicates$`Engine Displacement`)
 ranks_di <- rank(df_no_duplicates$Division)
 
 data <- data.frame(
-  CombinedFE = df_no_duplicates$`Combined FE`,
+  CityFE = df_no_duplicates$`City FE`,
   Cylinders = ranks_cy,
   EgineDisplacement = ranks_ed,
   Division = ranks_di
@@ -445,7 +439,7 @@ ranks_ed <- rank(df_no_duplicates$`Engine Displacement`)
 ranks_di <- rank(df_no_duplicates$Division)
 
 data <- data.frame(
-  CombinedCO2 = df_no_duplicates$`Combined CO2`,
+  CityCO2 = df_no_duplicates$`City CO2`,
   Cylinders = ranks_cy,
   EgineDisplacement = ranks_ed,
   Division = ranks_di
@@ -465,15 +459,15 @@ pheatmap(correlation_matrix,
 
 ```
 
-The results presented above indicate that there is a statistically significant correlation (p\<0.01) between the two Combined variables and the three independent variables (Number of Cylinders, Engine Displacement , Division). To further explain this relationship:
+The results presented above indicate that there is a statistically significant correlation between City FE variable and the three independent variables (Number of Cylinders, Engine Displacement , Division). To further explain this relationship:
 
--   There is a strong negative correlation between Combined Fuel Economy (FE) and Engine Displacement, Number of Cylinders.
+-   There is a strong negative correlation between City Fuel Economy (FE) and Engine Displacement, Number of Cylinders.
 
--   A weak negative correlation exists between Combined Fuel Economy and Division.
+-   A weak negative correlation exists between City Fuel Economy and Division.
 
--   There is a strong positive correlation between Combined CO2 and Number of Cylinders, and Engine Displacement.
+-   There is a strong positive correlation between City CO2 and Number of Cylinders, and Engine Displacement.
 
--   A weak positive correlation is observed between Combined Fuel Economy and Number of Gears.
+-   A weak positive correlation is observed between City Fuel Economy and Number of Gears.
 
 ### 4.7. Visual Insights into Fuel Economy and CO2.
 
@@ -482,19 +476,19 @@ The results presented above indicate that there is a statistically significant c
 **Number of Cylinders**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="Combined FE")
+boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City FE")
 ```
 
 **Engine Displacement**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="Combined FE")
+boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="City FE")
 ```
 
 **Division**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="Combined FE")
+boxplot(df_no_duplicates$`City FE` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="City FE")
 ```
 
 #### 4.7.2. CO2 Emission.
@@ -502,19 +496,19 @@ boxplot(df_no_duplicates$`Combined FE` ~ df_no_duplicates$Division, data = df_no
 **Number of Cylinders**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="Combined CO2")
+boxplot(df_no_duplicates$`City CO2` ~ df_no_duplicates$`# Cylinders`, data = df_no_duplicates,xlab="# Cylinders", ylab="City CO2")
 ```
 
 **Engine Displacement**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="Combined CO2")
+boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$`Engine Displacement`, data = df_no_duplicates,xlab="Engine Displacement", ylab="City CO2")
 ```
 
 **Division**
 
 ```{r}
-boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="Combined CO2")
+boxplot(df_no_duplicates$`Combined CO2` ~ df_no_duplicates$Division, data = df_no_duplicates,xlab="Division", ylab="City CO2")
 ```
 
 ## 5. Validating Hypotheses and Addressing Research Questions.
@@ -524,8 +518,8 @@ To accept or reject the null Hypotesis stated on [2. Research Question], we need
 ```{r}
 # Perform Kruskal-Wallis test
 krustal_data <- data.frame(
-  CombinedFE = df_no_duplicates$`Combined FE`,
-  CombinedCO2 = df_no_duplicates$`Combined CO2`,
+  CityFE = df_no_duplicates$`City FE`,
+  CityCO2 = df_no_duplicates$`City CO2`,
   Cylinders = df_no_duplicates$`# Cylinders`,
   EngineDisplacement = df_no_duplicates$`Engine Displacement`,
   Division = df_no_duplicates$Division
@@ -535,7 +529,7 @@ krustal_data <- data.frame(
 kruskal_results <- list()
 
 # Loop through combinations of numeric and categorical variables
-for (numeric_var in c("CombinedFE", "CombinedCO2")) {
+for (numeric_var in c("CityFE", "CityCO2")) {
   for (category_var in c("Cylinders", "EngineDisplacement", "Division")) {
     formula <- paste(numeric_var, "~", category_var)
     result <- kruskal.test(as.formula(formula), data = krustal_data)
@@ -553,10 +547,10 @@ print(kruskal_results)
 
 The result is p-values less than 2.2e-16 is a very strong indication that there is a significant effect or difference in your data, and you can confidently reject the null hypothesis in favor of the alternative hypothesis.
 
-| Fuel Economy                                                                                                               | CO2 Emission                                                                                                                       | Results      |
-|----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| **H0:** There is no difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
-| **H1:** There is difference in Combined FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in Combined CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
+| Fuel Economy                                                                                                           | CO2 Emission                                                                                                                   | Results      |
+|---------------------------|----------------------------|-----------------|
+| **H0:** There is no difference in City FE between vehicles with different Cylinders, Engine Displacement and Division. | **H0:** There is no difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division. | **REJECTED** |
+| **H1:** There is difference in City FE between vehicles with different Cylinders, Engine Displacement and Division.    | **H1:** There is difference in City CO2 between vehicles with different Cylinders, Gears, Engine Displacement and Division.    | **ACCEPTED** |
 
 From the above conclusion, we can say there is a relation between Fuel Economy and CO2 emissions, gathering all the information is possible to answer the research questions formulated in the context.
 
@@ -572,7 +566,7 @@ The type of car that provides the most FE and lowest CO2 emission can be defined
 
 -   Ford Cars are well know to build cars for the average men.
 
-We can conclusively assert that cars with lower fuel consumption are environmentally friendly
+We can assert with confidence that vehicles with higher fuel economy are inherently more environmentally friendly, especially within the urban sector. Higher fuel economy signifies efficient use of fuel resources, leading to reduced emissions and a more sustainable transportation system in urban areas.
 
 ## 6. Recommendations.
 

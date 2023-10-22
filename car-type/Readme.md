@@ -92,6 +92,6 @@ We can assert with confidence that vehicles with higher fuel economy are inheren
 
 To simplify data handling, it's advisable to utilize standardized values and avoid working with different units of measurement.
 
-# **See the code and findings on its respective lanaguage folder!**
+# **See the code and findings on its respective language folder!**
 
 For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

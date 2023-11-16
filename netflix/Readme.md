@@ -74,6 +74,6 @@ For analyzing variations in popular genres over time, no hypothesis test is requ
 For determining the most streamed content, statistical hypothesis testing may not be applicable. Instead, it involves finding the most occurring categories based on the data.
 
 
-# **See the code and findings on its respective lanaguage folder!**
+# **See the code and more insights on the notebook file!**
 
 For any inquiries or further details, please [contact me](mailto:erickborda96@.com).

@@ -11,6 +11,13 @@ This repository contains various data science projects I have worked on. Each pr
 **GitHub Repository:** ([link_to_repository](https://github.com/erickbordam/data-projects/tree/main/car-type))
 
 ---
+## Project 2: Netflix content analysis
+
+**Description:** The central challenge is to comprehend the dynamic content creation landscape within the streaming industry. Through a detailed analysis of trends encompassing content duration, ratings, and international distribution, this study seeks to offer crucial insights into the ever-changing preferences of 
+
+**GitHub Repository:** ([link_to_repository](https://github.com/erickbordam/data-projects/tree/main/netflix))
+
+---
 
 Feel free to explore the individual projects for more details and code implementation.
 

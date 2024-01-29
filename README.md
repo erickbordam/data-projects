@@ -21,4 +21,4 @@ This repository contains various data science projects I have worked on. Each pr
 
 Feel free to explore the individual projects for more details and code implementation.
 
-If you have any questions or would like to collaborate, please [contact me](mailto:your_email@example.com).
+If you have any questions or would like to collaborate, please [contact me](erickbordam@gmail.com).

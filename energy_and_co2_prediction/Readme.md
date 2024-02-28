@@ -1,78 +1,33 @@
 ---
-title: "Car Types"
+title: "Energy Consumption and CO2 Emission prediction"
 author: "Erick Borda"
-date: "2023-11-14"
+date: "2024-02-28"
 output: pdf_document
 ---
 
-# **Netflix Dataset Analysis**
+# **Energy consumption and CO2 emissions predictions and forecasts analysis project**
 
-## 1. Identified Problem
+## **1. Exploratory Data Analysis (EDA).**
 
-The central challenge is to comprehend the dynamic content creation landscape within the streaming industry. Through a detailed analysis of trends encompassing content duration, ratings, and international distribution, this study seeks to offer crucial insights into the ever-changing preferences of audiences, the intricate dynamics of regional content, and the strategic choices made by both content creators and streaming platforms. This knowledge becomes pivotal in adapting content strategies, customizing offerings to diverse audience segments, and refining content creation processes to align with the evolving demands of the global streaming market.
+The central challenge is to comprehend the dynamic content creation landscape within the streaming industry. Through a Exploratory Data Analysis (EDA) marks the primary phase of analysing data. It involves uncovering insights into the dataset's contents, characteristics, and size
 
-## 2. Research Question
+## **2. Data Preprocessing**
 
-In this project, it'll be focus on:
-1. How does the duration of content (movies and TV shows) vary across different content ratings, and are there significant differences in duration between content rated for different audiences?
-2.	How does the movie duration trend change before and after the year 2000?
-3.	How does the content production change over time? Is there any variation in popular genre over the years?
-4.	What kind of TV shows/movies are streamed most on Netflix?
+Data preprocessing techniques enhance data quality, crucial for accuracy and efficiency. This step is vital in knowledge discovery as quality decisions rely on quality data. Detecting and rectifying data anomalies early on, along with reducing the data for analysis, significantly benefits decision-making processes.
 
-## **3. Null Hypothesis.**
+## **3. Model Selection**
 
-* How does the duration of content (movies and TV shows) vary across different content ratings, and are there significant differences in duration between content rated for different audiences?
-  -  **H0:**  There is no significant difference in the mean duration of content (movies and TV shows) among different content ratings.
-  - **H1:** There is significant difference in the mean duration of content (movies and TV shows) among different content ratings.
-* How does the movie duration trend change before and after the year 2000?
-  - **H0:** There is no significant difference in the mean duration of movies before and after the year 2000.
-  - **H1:** There is significant difference in the mean duration of movies before and after the year 2000.
-* How does the content production change over time? Is there any variation in popular genres over the years?
-  - **H0:** There is no significant difference in the proportion of content production across different years, nor is there any variation in the popularity of genres over the years.
-  - **H1:** There is significant difference in the proportion of content production across different years, nor is there any variation in the popularity of genres over the years.
-* What kind of TV shows/movies are streamed most on Netflix?
-  - **H0:** There is no significant difference in the popularity of different genres or types of TV shows/movies streamed on Netflix.
-  - **H1:** There is significant difference in the popularity of different genres or types of TV shows/movies streamed on Netflix.
+I've experimented with a range of models to address my time series forecasting problem, starting with the simplicity of Linear Regression, advancing through the complexity of Random Forest and Gradient Boosting regressors, considering the non-linear capabilities of SVR, tapping into the deep learning arena with an MLP regressor, and not overlooking the time series specificity of ARIMA. Each model offered unique insights into the data, with ensemble methods like Random Forest and Gradient Boosting standing out for their robust performance. However, when grouping data and incorporating temporal features, these models required careful tuning to maintain their trend prediction capabilities. The journey through these various models has laid a foundation for a comprehensive understanding of the strengths and limitations inherent in each approach when applied to time series data grouped by country and year
 
-## 3. Data Cleaning.
-### 3.1. Missing data
+## 4. Random Forest Prediction Results.
+After settling on Random Forest for my model prediction due to its initial performance superiority, I encountered an unexpected twist when retraining with data grouped by country and year; the traditional performance metrics plummeted. However, the model's ability to forecast the overall trend remained relatively unaffected. This peculiar outcome has been a critical learning point, indicating that while Random Forest can grasp the broad strokes of the data's direction, fine-tuning is required to improve its precision on grouped datasets. Despite the metric downturn, the trend consistency reassures me of the model's underlying value, suggesting that with further refinement, particularly in feature engineering, Random Forest could achieve a more balanced predictive prowess
 
-Identify missing values and perform the right approach to the dataset.
-**There are no missing values.**
+## **5. Conclusion**
 
-### 3.2. Duplicate data.
+Random Forest and comparative had better performance than the rest over all, but after the selection metrics significantly declined upon retraining the model with data grouped by country and year, the capacity to capture and predict overarching trends persisted. This divergence between metric performance and trend prediction accuracy underscores a crucial insight—that the true value of a model in time series analysis often transcends numerical scores, residing instead in its ability to discern the direction of future movements. This phenomenon highlights the importance of evaluating models not just on their immediate accuracy but on their relevance and utility in forecasting trends, especially in complex, real-world scenarios where decisions hinge on understanding future directions rather than exact figures.
 
-* Identified the duplicated data
-**There are no duplicated values.**
-
-## 4. Data Exploration.
-
-* Exploration for Numerical Data.
-* Categorical Data.
-* Outliers.
-* Enhanced dataset.
-* Normal Distribution (Not normal distributed).
-* Visualization.
-
-## 5. Validating Hypotheses and Addressing Research Questions.
-
-To accept or reject the null Hypotesis stated on [2. Research Question], we need to use Kruskal-Wallis test, knowing that the does not follow normal distribution, to do that we need execute the following code:
-
-### **5.1. Research question #1.**
-
-Kruskal-Wallis test p-value for movie duration across content ratings: 3.7682246902139096e-198
-**Reject the null hypothesis: There are no significant differences in movie durations across content ratings.**
-Kruskal-Wallis test p-value for TV show duration across content ratings: 3.6392564604246986e-09
-**Reject the null hypothesis: There are no significant differences in TV show durations across content ratings.**
-
-### **5.2. Research Quesetion #2.**
-T-test p-value for movie duration before and after 2000: 1.6555793633300572e-35
-Reject the null hypothesis: There is no significant difference in movie durations before and after 2000.
-### **5.3. Research Question #3.**
-For analyzing variations in popular genres over time, no hypothesis test is required as it involves observing trends in data and identifying changing patterns without specific hypothesis testing.
-### **5.4. Research Question #4.**
-For determining the most streamed content, statistical hypothesis testing may not be applicable. Instead, it involves finding the most occurring categories based on the data.
-
+## **6. Future works**
+Moving forward, the experience points toward a dual path of refinement and exploration. The initial success in trend prediction, despite lower metrics, indicates the potential for further enhancing model performance through targeted feature engineering and the incorporation of domain-specific knowledge. Concurrently, there lies a compelling case for exploring alternative modeling approaches that are inherently suited to capturing temporal dependencies and handling grouped data. Models for seasonal trends, or LSTM networks for deep learning-based time series forecasting, present promising results. Additionally, simpler models with strong regularization techniques, like Linear, Lasso or Ridge Regression, could offer a balance between complexity and interpretability. These future endeavors aim not only to elevate metric scores but also to bolster the model's innate ability to forecast trends, ensuring that predictive analytics remains both accurate and actionable in the face of evolving data landscapes
 
 # **See the code and more insights on the notebook file!**
 
